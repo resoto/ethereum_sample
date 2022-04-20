@@ -1,0 +1,194 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>jsQR Demo</title>
+  <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+  <script src="https://kindaiichiba.sakura.ne.jp/dist/ethereumjs-tx.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css" media="all" />
+  <link href="https://fonts.googleapis.com/css?family=Ropa+Sans" rel="stylesheet">
+  
+<body>
+<br>
+<br>
+<br>
+<div class="container" align="center">
+<div class="panel panel-default">
+<div class="panel-body">
+<div class="col-sm-4" hidden><label>gas price(wei) / gas limit</label></div>
+<div class="col-sm-8" hidden><input type="text" id="gass_price" value="10000000000000"/><input type="text" id="gass_limit" value="196608"/></div>
+<span id = "storeName" style = "font-size: 20px;"></span>
+<span style = "font-size: 20px;">HIVE｜入室確認</span>
+<br>
+<br>
+<span style = "font-size: 20px;">会員番号：</span>
+<span id = "number" style = "font-size: 25px;"></span>
+<br>
+<span style = "font-size: 15px;">この番号で間違いないですか？</span>
+<br>
+<br>
+<a href="#" class="square_btn" onClick="sendEnt()">入室する</a>
+<a href="./timeCard.html" class="square_btn">取り消し</a>
+
+
+</div>
+</div>
+</div>
+</body>
+
+
+
+
+
+
+
+
+ <script>
+
+var param = GetQueryString();
+
+
+
+
+
+$("#number").text(param["number"]);
+
+console.log(param["number"]);
+console.log(param["address"]);
+
+/*document.write(n);
+document.write("完了です");
+document.write("<br>");
+document.write("入室できました！");*/
+
+setTimeout(function(){
+	//window.location.href = './register.html';
+}, 3*1000);
+
+
+function sendEnt(){
+
+  const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+  const address = '0xe219f082aa9aafc0c43d77f1a79a5b58e2e75549';
+var abi = [{"constant": false,"inputs": [{"name": "_newMember","type": "address"}],"name": "addMember","outputs": [],"payable": false,"stateMutability": "nonpayable","type": "function"},{"constant": false,"inputs": [{"name": "_newStaff","type": "address"}],"name": "addStaff","outputs": [],"payable": false,"stateMutability": "nonpayable","type": "function"},{"constant": false,"inputs": [{"name": "_newOwner","type": "address"}],"name": "changeOwner","outputs": [],"payable": false,"stateMutability": "nonpayable","type": "function"},{"constant": false,"inputs": [{"name": "_address","type": "address"}],"name": "entry","outputs": [{"name": "","type": "uint256"}],"payable": false,"stateMutability": "nonpayable","type": "function"},{"constant": false,"inputs": [{"name": "_address","type": "address"}],"name": "exit","outputs": [{"name": "","type": "uint256"}],"payable": false,"stateMutability": "nonpayable","type": "function"},{"constant": false,"inputs": [{"name": "_burnMember","type": "address"}],"name": "removeMember","outputs": [],"payable": false,"stateMutability": "nonpayable","type": "function"},{"inputs": [],"payable": false,"stateMutability": "nonpayable","type": "constructor"},{"anonymous": false,"inputs": [{"indexed": false,"name": "_mess","type": "string"}],"name": "MenberEvent","type": "event"},{"constant": true,"inputs": [{"name": "_address","type": "address"}],"name": "checkStay","outputs": [{"name": "","type": "bool"}],"payable": false,"stateMutability": "view","type": "function"},{"constant": true,"inputs": [],"name": "getCountNow","outputs": [{"name": "","type": "uint256"}],"payable": false,"stateMutability": "view","type": "function"},{"constant": true,"inputs": [],"name": "getCountToday","outputs": [{"name": "","type": "uint256"}],"payable": false,"stateMutability": "view","type": "function"},{"constant": true,"inputs": [{"name": "","type": "address"}],"name": "info","outputs": [{"name": "isIn","type": "bool"},{"name": "befforTime","type": "uint256"}],"payable": false,"stateMutability": "view","type": "function"},{"constant": true,"inputs": [{"name": "","type": "address"}],"name": "isMember","outputs": [{"name": "","type": "bool"}],"payable": false,"stateMutability": "view","type": "function"},{"constant": true,"inputs": [{"name": "","type": "address"}],"name": "isStaff","outputs": [{"name": "","type": "bool"}],"payable": false,"stateMutability": "view","type": "function"},{"constant": true,"inputs": [],"name": "owner","outputs": [{"name": "","type": "address"}],"payable": false,"stateMutability": "view","type": "function"}];
+
+let coinbase = web3.eth.accounts[0];
+//var contract =  new web3.eth.Contract(abi,address);
+var contract = web3.eth.contract(abi).at(address);
+  
+  var toAddress = String(param["address"]);
+  
+  let response = contract.entry.sendTransaction(toAddress ,{from:coinbase,gas:3000000});
+ //contract.methods.entry().sendTransaction("0x821674f4452f1f02776ec0d6f2b4b843bd5e62f9");
+console.log("response:",response);
+window.location.href = './finEntry.html';
+}
+
+
+
+ async function sendToken() {
+    
+        // 送信元のアドレス (Walletの作成手順にあるwallet.getAddress()のメソッドによって得られたaddress)     
+        // 送信先のアドレス
+        //var toAddress = "0xff3b93b50d3518596f7496e5ea49e929499546a4";
+        var toAddress = String(param["address"]);
+     
+        // ガスプライス
+        var gass_price = "0x" + Number($("#gass_price").val()).toString(16);
+        // ガスリミット
+        var gass_limit = "0x" + Number($("#gass_limit").val()).toString(16);
+
+        // 著名付きトランザクションのnonce値として必要なため、送信元アドレスのTransaction countを取得する
+        const count = await web3.eth.getTransactionCount(fromAddress);
+        const countHex = `0x` + count.toString(16);
+        
+        //const money = "0x" + Number(web3.utils.toWei($('#money').val(),'ether')).toString(16);
+        var inputValue = param["price"];
+        const money = "0x" + Number(web3.utils.toWei(inputValue,'ether')).toString(16);
+        //console.log(money);  
+        // 上記のWallet作成手順にある、wallet.getPrivateKeyString()によって得られた、Private keyの値を設定する
+        const privateKeyStr = privateKeyInput;
+        let privateKey = new EthJS.Buffer.Buffer(privateKeyStr, 'hex');
+        var contract =  new web3.eth.Contract(abi,toContract);
+        var functionAbi = contract.methods.transfer(toAddress,inputValue).encodeABI();
+
+     
+        
+        // transactionのパラメータの設定
+        const txParams = {
+            nonce: countHex,
+            // 適切なgasPriceとgasLimitを設定する
+            gasPrice: gass_price,
+            gasLimit: gass_limit,
+            to: toContract,
+            // 送金する金額
+            //value: money
+            data: functionAbi
+        };
+        console.log(txParams);
+        web3.eth.estimateGas(txParams,function(error, result){
+            console.log("gasLimit:");
+            console.log(result);
+        });
+        // Transactionオブジェクトの生成
+        const tx = new EthJS.Tx(txParams);
+        // 秘密鍵での署名 
+        tx.sign(privateKey);
+        // Transactionオブジェクトをシリアライズして、16進数で表現
+        const serializedTx = tx.serialize();
+        const rawTx = '0x' + serializedTx.toString('hex');
+        // 署名付きトランザクションの送信
+        web3.eth.sendSignedTransaction(rawTx)
+        .on('transactionHash', function(hash){
+          console.log('transactionHash');
+          //web3.eth.getTransaction(hash).then(alertJSON);
+        });
+        window.location.href = './fin.html';
+    }
+
+function GetQueryString() {
+            if (1 < document.location.search.length) {
+                // 最初の1文字 (?記号) を除いた文字列を取得する
+                var query = document.location.search.substring(1);
+
+                // クエリの区切り記号 (&) で文字列を配列に分割する
+                var parameters = query.split('&');
+
+                var result = new Object();
+                for (var i = 0; i < parameters.length; i++) {
+                    // パラメータ名とパラメータ値に分割する
+                    var element = parameters[i].split('=');
+
+                    var paramName = decodeURIComponent(element[0]);
+                    var paramValue = decodeURIComponent(element[1]);
+
+                    // パラメータ名をキーとして連想配列に追加する
+                    result[paramName] = decodeURIComponent(paramValue);
+                }
+                return result;
+            }
+            return null;
+        }
+ 
+
+
+  </script>
+  <style>
+  .square_btn{
+    display: inline-block;
+    padding: 0.5em 1em;
+    text-decoration: none;
+    background: #668ad8;/*ボタン色*/
+    color: #FFF;
+    border-bottom: solid 4px #627295;
+    border-radius: 3px;
+}
+.square_btn:active {/*ボタンを押したとき*/
+    -ms-transform: translateY(4px);
+    -webkit-transform: translateY(4px);
+    transform: translateY(4px);/*下に動く*/
+    border-bottom: none;/*線を消す*/
+}
+  </style>
+  
+</html>

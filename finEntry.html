@@ -1,0 +1,122 @@
+
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TokenPay Wallet</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"  crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+          <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css" media="all" />
+        <style>
+/* 画面前面の全体に表示 */
+#loading_box {
+    width: 100%;
+    height: 100%;
+    background: #FFF;
+    opacity: 0.8;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+/* 画面の中心にローディング画像を表示する */
+#loading_box img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -40px 0 0 -40px;
+    width: auto;
+}
+        </style>
+    </head>
+    <body>
+    <br>
+<br>
+<br>
+<br>
+    <div class="container" align="center">
+<div class="panel panel-default">
+<div class="panel-body">
+
+    <span style = "font-size: 20px" id = "result1">実行しています</span>
+    <br>
+    <span style = "font-size: 20px" id = "result2">しばらくお待ち下さい</span>
+    <br>
+     <span style = "font-size: 20px" id = "result3">戻るボタンを押さないで下さい</span>
+    </div>
+    </div>
+    <a href="./timeCard.html" class="square_btn">戻る</a>
+  
+    </div>
+    </body>
+    <script type="text/javascript">
+        showLoading(); 
+        
+const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+ const address = '0xe219f082aa9aafc0c43d77f1a79a5b58e2e75549';
+var abi = [{"constant": false,"inputs": [{"name": "_newMember","type": "address"}],"name": "addMember","outputs": [],"payable": false,"stateMutability": "nonpayable","type": "function"},{"constant": false,"inputs": [{"name": "_newStaff","type": "address"}],"name": "addStaff","outputs": [],"payable": false,"stateMutability": "nonpayable","type": "function"},{"constant": false,"inputs": [{"name": "_newOwner","type": "address"}],"name": "changeOwner","outputs": [],"payable": false,"stateMutability": "nonpayable","type": "function"},{"constant": false,"inputs": [{"name": "_address","type": "address"}],"name": "entry","outputs": [{"name": "","type": "uint256"}],"payable": false,"stateMutability": "nonpayable","type": "function"},{"constant": false,"inputs": [{"name": "_address","type": "address"}],"name": "exit","outputs": [{"name": "","type": "uint256"}],"payable": false,"stateMutability": "nonpayable","type": "function"},{"constant": false,"inputs": [{"name": "_burnMember","type": "address"}],"name": "removeMember","outputs": [],"payable": false,"stateMutability": "nonpayable","type": "function"},{"inputs": [],"payable": false,"stateMutability": "nonpayable","type": "constructor"},{"anonymous": false,"inputs": [{"indexed": false,"name": "_mess","type": "string"}],"name": "MenberEvent","type": "event"},{"constant": true,"inputs": [{"name": "_address","type": "address"}],"name": "checkStay","outputs": [{"name": "","type": "bool"}],"payable": false,"stateMutability": "view","type": "function"},{"constant": true,"inputs": [],"name": "getCountNow","outputs": [{"name": "","type": "uint256"}],"payable": false,"stateMutability": "view","type": "function"},{"constant": true,"inputs": [],"name": "getCountToday","outputs": [{"name": "","type": "uint256"}],"payable": false,"stateMutability": "view","type": "function"},{"constant": true,"inputs": [{"name": "","type": "address"}],"name": "info","outputs": [{"name": "isIn","type": "bool"},{"name": "befforTime","type": "uint256"}],"payable": false,"stateMutability": "view","type": "function"},{"constant": true,"inputs": [{"name": "","type": "address"}],"name": "isMember","outputs": [{"name": "","type": "bool"}],"payable": false,"stateMutability": "view","type": "function"},{"constant": true,"inputs": [{"name": "","type": "address"}],"name": "isStaff","outputs": [{"name": "","type": "bool"}],"payable": false,"stateMutability": "view","type": "function"},{"constant": true,"inputs": [],"name": "owner","outputs": [{"name": "","type": "address"}],"payable": false,"stateMutability": "view","type": "function"}];
+
+var contract = web3.eth.contract(abi).at(address);
+
+/*setTimeout(function(){
+	window.location.href = './timeCard.html';
+}, 3*1000);*/
+
+
+// ローディング表示
+function showLoading() {
+    $('body').append('<div id="loading_box"><img src="gif-load.gif"></div>');
+}
+
+// 表示したローディングを消す
+function hideLoading() {
+    $('#loading_box').remove();
+}
+
+   watch();
+        function watch(){
+             event = contract.MenberEvent();
+             event.watch(function(error, result){
+                 
+                 $("#result1").text(String(result["args"]["_mess"]));
+                 $("#result2").text("");
+                 $("#result3").text("");
+               
+          
+                
+               hideLoading();
+                 
+                console.log("Event Executed");
+                console.log(String(result["args"]["_mess"]));
+            });
+        }
+        
+
+</script>
+
+<style>
+.square_btn{
+    display: inline-block;
+    padding: 0.5em 1em;
+    text-decoration: none;
+    background: #668ad8;/*ボタン色*/
+    color: #FFF;
+    border-bottom: solid 4px #627295;
+    border-radius: 3px;
+}
+.square_btn:active {/*ボタンを押したとき*/
+    -ms-transform: translateY(4px);
+    -webkit-transform: translateY(4px);
+    transform: translateY(4px);/*下に動く*/
+    border-bottom: none;/*線を消す*/
+}
+
+</style>
+</html>
