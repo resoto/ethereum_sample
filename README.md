@@ -1,3 +1,3 @@
 # ethereum_sample 
-<div align="center"><img src="https://github.com/resoto/bcaim_edit/blob/main/pic/logo.png" width="400"/></div>
+<div align="center"><img src="https://github.com/resoto/ethereum_sample/blob/main/sample.png" width="400"/></div>
 
